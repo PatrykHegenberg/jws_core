@@ -12,9 +12,7 @@ type Config struct {
 	LogFile   string `mapstructure:"log_file"`
 }
 
-var cfg Config
-
-func InitConfig(configPath string) error {
+func (c *Config) Init(configPath string) error {
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("toml")
 
@@ -22,13 +20,23 @@ func InitConfig(configPath string) error {
 		return fmt.Errorf("error reading config file: %s", err)
 	}
 
-	if err := viper.Unmarshal(&cfg); err != nil {
+	if err := viper.Unmarshal(c); err != nil {
 		return fmt.Errorf("unable to decode into struct, %v", err)
 	}
 
 	return nil
 }
 
-func GetConfig() Config {
-	return cfg
+func (c *Config) GetLogLevel() string {
+	return c.LogLevel
+}
+
+// ... weitere Getter-Methoden für andere Felder
+
+func NewConfig(configPath string) (*Config, error) {
+	cfg := &Config{}
+	if err := cfg.Init(configPath); err != nil {
+		return nil, err
+	}
+	return cfg, nil
 }

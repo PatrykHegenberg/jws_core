@@ -1,25 +1,13 @@
-package environment
+//go:build linux
+// +build linux
+
+package operatingsystem
 
 import (
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 )
-
-type OS struct {
-	ID      string
-	Name    string
-	Version string
-}
-
-func Info() (*OS, error) {
-	return platformInfo()
-}
-
-func GetOperatingSystem() string {
-	return runtime.GOOS
-}
 
 func platformInfo() (*OS, error) {
 	_, err := os.Stat("/etc/os-release")
@@ -32,19 +20,15 @@ func platformInfo() (*OS, error) {
 }
 
 func parseOsRelease(osRelease string) *OS {
-	// Default value
 	var result OS
 	result.ID = "Unknown"
 	result.Name = "Unknown"
 	result.Version = "Unknown"
 
-	// Split into lines
 	lines := strings.Split(osRelease, "\n")
-	// Iterate lines
+
 	for _, line := range lines {
-		// Split each line by the equals char
 		splitLine := strings.SplitN(line, "=", 2)
-		// Check we have
 		if len(splitLine) != 2 {
 			continue
 		}
